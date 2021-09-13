@@ -31,7 +31,7 @@ while getopts "$ARGUMENT_STRING" option; do
             CLEAN="yes"
             ;;
         c )
-            checkProperRename
+            CHECK="yes"
             ;;
         t )
             TEST="yes"
@@ -68,10 +68,15 @@ fi
 cd "$WORK_DIR" || exit
 ensureFolderExists "$OUT_FOLDER"
 
+if [ "$CHECK" = "yes" ]; then
+    checkProperRename
+    exit 0
+fi
+
 # On each file in the folder, call the actual renaming functions
 for file in *; do
     if [ -f "$file" ]; then
-        if RoutineRenameMeta "$file"; then
+        if ! RoutineRenameMeta "$file"; then
             RoutineRenameFile "$file"
         fi
     fi
