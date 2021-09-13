@@ -9,39 +9,34 @@
 function version()
 {
     SEMVER=$SEMVER_X.$SEMVER_Y
-    if [ ! -z $SEMVER_Z ]; then
+    if [ -n "$SEMVER_Z" ]; then
         SEMVER+=".$SEMVER_Z"
     fi
-    if [ ! -z $SEMVER_A ]; then
+    if [ -n "$SEMVER_A" ]; then
         SEMVER+="-$SEMVER_A"
     fi
-    echo -n "$(basename $0) version $SEMVER"
-    echo ""
+    echo "$(basename $0) version $SEMVER"
 }
 
 function usage()
 {
     echo "Use : $(basename "$0") [OPTIONS]... FOLDER"
     echo "rename files in FOLDER accordingly to metadata or filename structure."
-    echo "  -m          use metadata to rename files (default)"
-    echo "  -n          use filename format to rename files (experimental)"
-    echo "  -b          use both methods to rename (metadata THEN filename)"
-    echo "  -t          do not rename, just pretend"
     echo ""
     echo "  -s          write to stdout (default)"
     echo "  -l          write to log file ($MAIN_LOG)"
     echo "  -q          quiet"
     echo ""
     echo "  -o [FOLDER] move renamed files into FOLDER"
-    echo "  -c          clean, moves file to corresponding year folder"
+    echo "  -f          clean, moves file to corresponding year folder"
     echo ""
+    echo "  -t          do not rename, just pretend"
     echo "  -d          show debug messages"
     echo "  -h          show this message"
     echo ""
     echo "Licenced under the terms of the LGLP"
     echo ""
 }
-
 
 function debug()
 {
@@ -62,7 +57,6 @@ function say()
 function lowercaseName()
 {
     echo "$1" | tr '[:upper:]' '[:lower:]'
-    echo -n ""
 }
 
 function ensureFolderExists()
@@ -113,8 +107,7 @@ function getDateTimeTag()
     if [ -z "$TAG" ]; then
         return 255
     fi
-    TAG=$(echo "$TAG" | sed 's/^.*datetime=//' | cut -d',' -f1 | cut -d']' -f1)
-    echo "$TAG"
+    echo "$TAG" | sed 's/^.*datetime=//' | cut -d',' -f1 | cut -d']' -f1
 }
 
 function makeNameFromTag()
@@ -140,8 +133,7 @@ function makeNameFromFile()
         return 255
     fi
     string="$1"
-    string=$(echo "$string" | sed -E -e "s/^$REGEX_FINAL\$/\2-\3-\4 \6\8/")
-    echo "$string"
+    echo "$string" | sed -E -e "s/^$REGEX_FINAL\$/\2-\3-\4 \6\8/"
 }
 
 function makeUniqueFilename()
@@ -165,7 +157,7 @@ function makeUniqueFilename()
         comparison_name+="$EXT"
 
         while [ -f "$OUT_FOLDER/$comparison_name" ]; do
-            IDX=$(($IDX + 1))
+            IDX=$((IDX + 1))
             comparison_name="$baseName"
             comparison_name+="_"
             comparison_name+="$IDX"
@@ -190,8 +182,7 @@ function RoutineRenameMeta()
     # extracting TAG
     TAG=$(getDateTimeTag "$file")
     if [ $? -eq 255 ]; then
-        say "Error - No date TAG found for $1, exiting"
-        FAILED=$((FAILED + 1))
+        say "No datetime TAG found for $1, skipping"
         return 127
     fi
 
@@ -222,12 +213,12 @@ function RoutineRenameMeta()
         say "$file hasn't been renamed. Please investigate"
         return 127
     fi
+    exit 0
 }
 
 function RoutineRenameFile()
 {
     file="$1"
-
     # is filename matching the regex?
     if [[ "$file"  =~ $REGEX_FINAL ]]; then
         # renaming with the regex

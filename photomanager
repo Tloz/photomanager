@@ -5,26 +5,12 @@
 # Licenced under the terms of the LGLP
 # Created on 2020 May 9
 
-
 source photomanager_settings.sh
 source photomanager_functions.sh
 
 ############# Arg management ##############
 while getopts "$ARGUMENT_STRING" option; do
     case "${option}" in
-        #mfbslqo:f:ch
-        m)
-            TODO="m"
-            ;;
-        n)
-            TODO="n"
-            ;;
-        b)
-            TODO="b"
-            ;;
-        t )
-            TEST="yes"
-            ;;
         s)
             VERBOSITY="s"
             ;;
@@ -41,8 +27,11 @@ while getopts "$ARGUMENT_STRING" option; do
             fi
             OUT_FOLDER="${OPTARG}"
             ;;
-        c)
+        f)
             CLEAN="yes"
+            ;;
+        t )
+            TEST="yes"
             ;;
         d )
             DEBUG="yes"
@@ -63,8 +52,6 @@ shift $((OPTIND-1))
 ###########################################
 
 if [ $# -eq 0 ]; then
-    # say "Error - no argument provided. Exiting..."
-    # exit 128
     WORK_DIR="."
 else
     WORK_DIR="$1"
@@ -74,41 +61,22 @@ if [ ! -d "$WORK_DIR" ]; then
     say "Folder $1 doesn't exists. Exiting..."
     exit 127
 fi
-#shopt -s nocaseglob
 
 cd "$WORK_DIR" || exit
-
-# say "$(date +"%D %H:%M:%S") : $(basename "$0") begin to work"
-
 ensureFolderExists "$OUT_FOLDER"
-# ensureFolderExists "$FAIL_FOLDER"
 
-if [ $TODO = "m" ] || [ $TODO = "b" ]; then
-    for file in *; do
-        if [ -f "$file" ]; then
-            RoutineRenameMeta "$file"
-        fi
-    done
-fi
-
-if [ $TODO = "n" ] || [ $TODO = "b" ]; then
-    for file in *; do
-        if [ -f "$file" ]; then
+# On each file in the folder, call the actual renaming functions
+for file in *; do
+    if [ -f "$file" ]; then
+        if RoutineRenameMeta "$file"; then
             RoutineRenameFile "$file"
         fi
-    done
-fi
+    fi
+done
 
+# Move the files into the appropriates folder if asked
 if [ $CLEAN = "yes" ]; then
-    echo "cleaning"
     cd "$OUT_FOLDER" || exit
-    # for format in $SUPPORTED_FORMATS; do
-    #     for file in *."$format"; do
-    #         if [ -f "$file" ]; then
-    #             moveToYearFolder "$file"
-    #         fi
-    #     done
-    # done
     for file in ./*; do
         if [ -f "$file" ]; then
             moveToYearFolder "$file"
@@ -116,6 +84,6 @@ if [ $CLEAN = "yes" ]; then
     done
 fi
 
-# say "$TOUCHED file(s) renamed, $FAILED left untouched, $MOVED moved to proper year folder."
-# say "$(date +"%D %H:%M:%S") : $(basename "$0") terminated with code 0"
+echo "$TOUCHED file(s) renamed, $MOVED moved to proper year folder."
+
 exit 0
