@@ -30,6 +30,7 @@ function usage()
     echo "  -o [FOLDER] move renamed files into FOLDER"
     echo "  -f          clean, moves file to corresponding year folder"
     echo ""
+    echo "  -c          check if files are properly renamed" 
     echo "  -t          do not rename, just pretend"
     echo "  -d          show debug messages"
     echo "  -h          show this message"
