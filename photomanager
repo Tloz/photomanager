@@ -30,6 +30,9 @@ while getopts "$ARGUMENT_STRING" option; do
         f)
             CLEAN="yes"
             ;;
+        c )
+            checkProperRename
+            ;;
         t )
             TEST="yes"
             ;;

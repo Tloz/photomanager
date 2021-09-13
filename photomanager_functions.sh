@@ -260,13 +260,21 @@ function RoutineRenameFile()
 
 function checkProperRename()
 {
-    filename="$1"
-    if [[ ! $filename =~ $REGEX_TARGET ]]; then
-        echo "Filename $filename not compliant with regexp. Aborting."
-        return 255
-    fi
-    echo "Filename is properly formed !"
-    return 0
+    GOOD=0
+    BAD=0
+    for file in *; do
+        if [ -f "$file" ]; then
+            if [[ ! $file =~ $REGEX_TARGET ]]; then
+                echo "Filename $file not compliant with regexp."
+                BAD=$((BAD + 1))
+            fi
+            echo "Filename $file is properly formed !"
+            GOOD=$((GOOD + 1))
+        fi
+    done
+
+    echo "$GOOD file(s) with correct name"
+    echo "$BAD file(s) with incorrect name"
 }
 
 function moveToYearFolder()

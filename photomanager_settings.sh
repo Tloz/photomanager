@@ -34,7 +34,7 @@ REGEX_TARGET="^[0-9]{4}-[0-9]{2}-[0-9]{2}( [0-9]{4,6})?$REGEX_EXT\$"
 ################################
 
 ########## ARGUMENTS ###########
-ARGUMENT_STRING="slqo:ftdvh"
+ARGUMENT_STRING="slqo:fctdvh"
 TEST="no"
 TOUCHED=0
 MOVED=0
