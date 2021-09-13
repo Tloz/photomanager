@@ -7,7 +7,7 @@
 
 ########### SETTINGS ###########
 SEMVER_X="1"
-SEMVER_Y="0"
+SEMVER_Y="1"
 SEMVER_Z=""
 SEMVER_A=""
 # Folders
