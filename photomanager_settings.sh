@@ -8,7 +8,7 @@
 ########### SETTINGS ###########
 SEMVER_X="1"
 SEMVER_Y="1"
-SEMVER_Z=""
+SEMVER_Z="1"
 SEMVER_A=""
 # Folders
 OUT_FOLDER="."
@@ -30,8 +30,11 @@ REGEX_TCODE="[0-9]{4,6}?"
 REGEX_NOTE="[A-Za-z -_]*"
 REGEX_EXT="\.[[:alnum:]]{3,4}"
 
+REGEX_DATE_FORM="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+
 REGEX_FINAL="^($REGEX_SEP)$REGEX_DATE($REGEX_SEP)($REGEX_TCODE)($REGEX_NOTE)($REGEX_EXT)\$"
-REGEX_TARGET="^[0-9]{4}-[0-9]{2}-[0-9]{2}( [0-9]{4,6}(_[0-9]+)?)?$REGEX_EXT\$"
+REGEX_TARGET="^$REGEX_DATE_FORM( [0-9]{4,6}(_[0-9]+)?)?$REGEX_EXT\$"
+REGEX_INTER="^$REGEX_DATE_FORM $REGEX_EXT\$"
 ################################
 
 ########## ARGUMENTS ###########
