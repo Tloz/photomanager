@@ -135,7 +135,12 @@ function makeNameFromFile()
         return 255
     fi
     string="$1"
-    echo "$string" | sed -E -e "s/^$REGEX_FINAL\$/\2-\3-\4 \6\8/"
+    string=$(echo "$string" | sed -E -e "s/^$REGEX_FINAL\$/\2-\3-\4 \6\8/")
+    if [[ "$string" =~ $REGEX_INTER ]]; then # string malformed
+        string=$(echo "$string" | tr -d ' ')
+    fi
+    echo "$string"
+
 }
 
 function makeUniqueFilename()
